@@ -4,7 +4,8 @@
  :dependencies '[[adzerk/boot-reload "0.4.12" :scope "test"]
                  [adzerk/boot-test "1.1.2" :scope "test"]
                  [metosin/boot-alt-test "0.2.1" :scope "test"]
-                 [org.clojure/tools.namespace "0.2.11" :scope "test"]])
+                 [org.clojure/tools.namespace "0.2.11" :scope "test"]
+                 [congomongo "0.5.0"]])
 
 (require
  '[boot.task.built-in          :refer [aot]]
