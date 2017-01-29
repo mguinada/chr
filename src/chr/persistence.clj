@@ -1,8 +1,6 @@
 (ns chr.persistence
   (:require [somnium.congomongo :as m]))
 
-(def ^:private conn)
-
 (defn connect
   [dbname]
   (m/set-connection!
@@ -10,26 +8,20 @@
                       :host "127.0.0.1"
                       :port 27017)))
 
-(defn create!
-  [collection model]
-  (m/insert! collection model))
+(defn fetch-one
+  [collection id]
+  (m/fetch-one collection :where {:_id id}))
 
 (defn mass-insert!
   [collection data]
   (dorun (m/mass-insert! collection data)))
 
 (defn update!
-  [collection data new-data]
-  (m/update! collection data (merge data new-data)))
+  [collection {id :_id :as data} new-data]
+  (m/update! collection {:_id id} (merge data new-data)))
 
-(defn drop-coll!
-  [collection]
-  (m/drop-coll! collection))
-
-(defn find
-  [collection id]
-  (m/fetch-one collection :where {:_id id}))
-
-(defn count
-  [collection]
-  (m/fetch-count collection))
+(def insert! m/insert!)
+(def drop-coll! m/drop-coll!)
+(def fetch-count m/fetch-count)
+(def aggregate m/aggregate)
+(def object-id m/object-id)
