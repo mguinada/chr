@@ -2,8 +2,6 @@
   (:require [clojure [string :as str] [data :as d]])
   (:import [java.util Calendar TimeZone]))
 
-;; Data processing
-
 (defn- nested?
   "Returns true of that are maps contained in `changes`"
   [changes]
@@ -43,37 +41,6 @@
         (reduce tuples '())
         (flatten-data)
         (map changes))))
-
-;; Utilities for working with time
-
-(defn calendar
-  "Get an instance of java.util.Calendar"
-  []
-  (doto (Calendar/getInstance)
-    (.setTimeZone (TimeZone/getTimeZone "UTC"))))
-
-(defn set-calendar
-  "Sets calendar to a date"
-  ([year month day hour minute secs]
-   (doto (calendar)
-     (.set java.util.Calendar/DAY_OF_MONTH day)
-     (.set java.util.Calendar/MONTH (dec month))
-     (.set java.util.Calendar/YEAR year)
-     (.set java.util.Calendar/HOUR_OF_DAY hour)
-     (.set java.util.Calendar/MINUTE minute)
-     (.set java.util.Calendar/SECOND secs)
-     (.set java.util.Calendar/MILLISECOND 0)))
-  ([year month day hour minute]
-   (set-calendar year month day hour minute 0))
-  ([year month day hour]
-   (set-calendar year month day hour 0 0))
-  ([year month day]
-   (set-calendar year month day 0 0 0)))
-
-(defn time
-  "Gets current time from the calendar"
-  [cal]
-  (.getTime cal))
 
 (defn timestamp
   []

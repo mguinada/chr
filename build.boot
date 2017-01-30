@@ -5,13 +5,21 @@
                  [adzerk/boot-test "1.1.2" :scope "test"]
                  [metosin/boot-alt-test "0.2.1" :scope "test"]
                  [org.clojure/tools.namespace "0.2.11" :scope "test"]
-                 [congomongo "0.5.0"]])
+                 [congomongo "0.5.0"]
+                 [compojure "1.5.2"]
+                 [javax.servlet/servlet-api "2.5"]
+                 [ring "1.5.1"]
+                 [ring/ring-defaults "0.1.5"]
+                 [ring/ring-json "0.4.0"]
+                 [ring/ring-defaults "0.2.1"]
+                 [cheshire "5.7.0"]])
 
 (require
- '[boot.task.built-in          :refer [aot]]
- '[adzerk.boot-reload          :refer [reload]]
- '[adzerk.boot-test            :refer [test]]
- '[metosin.boot-alt-test       :refer [alt-test]])
+ '[boot.task.built-in    :refer [aot]]
+ '[adzerk.boot-reload    :refer [reload]]
+ '[adzerk.boot-test      :refer [test]]
+ '[metosin.boot-alt-test :refer [alt-test]]
+ '[chr.web.service       :refer [-main]])
 
 ;;clojure namespace tools integration
 (swap! boot.repl/*default-dependencies* conj
@@ -36,6 +44,11 @@
         (repl)
         (reload)
         (build)))
+
+(deftask run-server []
+  (comp (build)
+        (repl)
+        (with-pre-wrap fileset (-main) fileset)))
 
 (deftask run-tests
   [a autotest bool "If no exception should be thrown when tests fail"]
