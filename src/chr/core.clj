@@ -15,8 +15,8 @@
               (->> old
                    (keys)
                    (map (fn [k] [(keyword (str/join "." [(name field) (name k)]))
-                                 (get-in old [k])
-                                 (get-in new [k])])))
+                                 (get old k)
+                                 (get new k)])))
               (vector tuple)))]
     (->> changes
          (map tuple-flattener)

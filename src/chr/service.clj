@@ -1,6 +1,7 @@
 (ns chr.service
   (:require [chr.core :as c]
-            [chr.persistence :as p]))
+            [chr.persistence :as p])
+  (:import [java.text SimpleDateFormat]))
 
 (p/connect "challange")
 
@@ -20,8 +21,7 @@
    and `nil` will be returned."
   [{id :_id :as current} data]
   (let [changes (c/changes current data) t (c/timestamp)
-        id (:_id current)
-        id (coerce-obj-id id)]
+        id (coerce-obj-id (:_id current))]
     (if-not (empty? changes)
       (do
         (p/update! :users current (assoc data :_id id))

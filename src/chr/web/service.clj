@@ -8,18 +8,13 @@
             [ring.adapter.jetty :as jetty]
             [chr.service :as s]
             [cheshire.generate :as json-enc])
-  (:import [org.bson.types ObjectId]
-           [java.text SimpleDateFormat]))
+  (:import [org.bson.types ObjectId]))
 
-(json-enc/add-encoder ObjectId
-                      (fn [oid gen]
-                        (.writeString gen (str oid))))
+(json-enc/add-encoder ObjectId (fn [oid gen] (.writeString gen (str oid))))
 
 (defn- api*
   [routes]
-  (setup/wrap-defaults
-   routes
-   setup/api-defaults))
+  (setup/wrap-defaults routes setup/api-defaults))
 
 (defroutes api-routes
   (context "/api" []
