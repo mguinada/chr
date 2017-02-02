@@ -1,6 +1,5 @@
 (ns chr.core
-  (:require [clojure [string :as str] [data :as d]])
-  (:import [java.util Calendar TimeZone]))
+  (:require [clojure.data :as d]))
 
 (defn- nested?
   "Returns true of that are maps contained in `changes`"
@@ -14,9 +13,10 @@
             (if (map? old)
               (->> old
                    (keys)
-                   (map (fn [k] [(keyword (str/join "." [(name field) (name k)]))
-                                 (get old k)
-                                 (get new k)])))
+                   (map (fn [k]
+                          [(keyword (str (name field) "." (name k)))
+                           (get old k)
+                           (get new k)])))
               (vector tuple)))]
     (->> changes
          (map tuple-flattener)
@@ -31,16 +31,23 @@
       (mapv (partial apply vector) coll)
       (recur (dotify coll)))))
 
+(defn diff
+  "Returns a list of vectors for each difference between `m1` and `m2` maps.
+   Each difference is represented by the map key, the key's value for `m1`
+   followed by the key's value at `m2`"
+  [m1 m2]
+  (let [[only-a only-b] (d/diff m1 m2)
+        diff-tuple (fn [coll [k v]]
+                     (conj coll [k v (get only-b k)]))]
+    (reduce diff-tuple '() only-a)))
+
 (defn changes
-  "Returns a collection describing, per field, the changes between `a` and `b`"
+  "Returns a vector describing, per field, the changes between `a` and `b`"
   [a b]
-  (let [[only-a only-b _] (d/diff a b)
-        tuples  (fn [coll [k v]] (conj coll [k v (get only-b k)]))
-        changes (fn [coll] (zipmap [:field :old :new] coll))]
-   (->> only-a
-        (reduce tuples '())
+  (letfn [(into-maps [coll] (mapv (partial zipmap [:field :old :new]) coll))]
+    (-> (diff a b)
         (flatten-data)
-        (map changes))))
+        (into-maps))))
 
 (defn timestamp
   []

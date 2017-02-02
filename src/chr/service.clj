@@ -20,8 +20,9 @@
    If no changes between data are detected, the database will not be hit
    and `nil` will be returned."
   [{id :_id :as current} data]
-  (let [changes (c/changes current data) t (c/timestamp)
-        id (coerce-obj-id (:_id current))]
+  (let [changes (c/changes current data)
+        id (coerce-obj-id (:_id current))
+        t (c/timestamp)]
     (if-not (empty? changes)
       (do
         (p/update! :users current (assoc data :_id id))
