@@ -19,9 +19,9 @@
 (defroutes api-routes
   (context "/api" []
            (POST "/save" [:as {body :body}]
-                 (r/response (s/save! body)))
+             (r/response (s/save! body)))
            (GET "/changes/:user-id/:t1/:t2" [user-id t1 t2]
-                (r/response (s/changes user-id (s/parse-date t1) (s/parse-date t2))))
+             (r/response (s/changes user-id (s/parse-date t1) (s/parse-date t2))))
            (route/not-found {:status 404 :body {:message "Not found"}})))
 
 (def api
